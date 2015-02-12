@@ -1,0 +1,71 @@
+var React = require('react'); 
+
+/** 
+ * Container that displays route and time until it arrive to closest bus stop
+ */ 
+var RouteTimer = React.createClass({
+    /** Renders route and minutes until next arrival. 
+    *   @return {string} rendered table row with route and arrival time
+    */ 
+    render: function() {
+        var route = <span style={{color: 'green'}}> 
+                        {this.props.route.number}
+                    </span>;
+        var timer = <span style={{color: 'red'}}>
+                        {this.props.route.timer} minutes
+                    </span>; 
+        return (
+            <tr> 
+                <td>{route}</td>
+                <td>{timer}</td>
+            </tr>
+        ); 
+    }
+}); 
+
+/** 
+ * Container that displays bus routes grouped by direction
+*/ 
+var DirectionBoundRouteGroup = React.createClass({ 
+    /** Renders a group of RouteTimer components based on props passed from RouteGroups
+     * @return {string} rendered table with RouteTimer components
+     */ 
+    render: function() {
+        var routeTimers = []; 
+        this.props.routes.forEach(function(route) {
+            routeTimers.push(<RouteTimer route={route} key={route.id} />); 
+        }); 
+
+        return (
+            <table>
+                <thead>{this.props.direction}</thead>
+                <tbody>{routeTimers}</tbody>
+            </table> 
+        ); 
+    }
+}); 
+
+/**
+ * Top level container bus route groups for north, south
+ * east, and west bound routes
+*/ 
+var RouteGroups = React.createClass({
+    /** Pushes data from BusRoutes model down component hierarchy to 
+      * render DirectionBoundRouteGroup components 
+      * @return {string} rendered DirectionBoundRouteGroup components 
+      */  
+    render : function() {
+        var routeGroups = []; 
+        this.props.routeGroups.forEach(function(routeGroup) {
+            routeGroups.push(<DirectionBoundRouteGroup routes={routeGroup.routes} direction={routeGroup.direction}  key={routeGroup.direction} />); 
+        }); 
+        
+        return (
+            <div>
+                {routeGroups}
+            </div> 
+        ); 
+    }
+}); 
+
+module.exports = NextBusApp = RouteGroups; 
